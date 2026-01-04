@@ -10,9 +10,9 @@ if (isArm) {
 }
 
 const findExecutablePath = () => {
-  if (isArm) {
-    return puppeteer.executablePath();
-  }
+  // if (isArm) {
+  //   return puppeteer.executablePath();
+  // }
   const paths = [
     "/usr/bin/chromium",
     "/usr/bin/google-chrome",
@@ -27,6 +27,7 @@ const run = async () => {
     const browser = await puppeteer.launch({
       headless: true,
       executablePath: findExecutablePath(),
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
     const page = await browser.newPage();
     await page.goto("https://example.com");

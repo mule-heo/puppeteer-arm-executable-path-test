@@ -77,6 +77,18 @@ FROM --platform=linux/arm64 node:24
 WORKDIR /app
 COPY package*.json ./
 
+RUN apt-get update && apt-get install -y \
+  chromium-browser \
+  fonts-liberation \
+  libnss3 \
+  libatk-bridge2.0-0 \
+  libx11-xcb1 \
+  libxcomposite1 \
+  libxdamage1 \
+  libxrandr2 \
+  libgbm1 \
+  libasound2
+
 RUN yarn install
 RUN yarn dlx puppeteer browsers install
 

@@ -201,3 +201,59 @@ browser path: /app/node_modules/puppeteer/.local-chromium/linux-arm64/chrome
 ## 📄 License
 
 MIT
+
+---
+
+## Replacing puppeteer with playwright
+
+ARM 기반 Ubuntu + Docker 환경에서 chromium 미제공, chromium-browser는 snap 강제. playwright로의 변경을 시도한다.
+
+### ▶️ Playwright 실행 관련 (선택)
+
+- 첫 설치 시 브라우저 자동 다운로드 비활성화
+
+```bash
+export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+yarn install
+```
+
+- 이후 필요한 브라우저만 다운로드
+
+```bash
+# 사용법
+yarn playwright install [options] [browser...]
+
+# 설치 가능한 브라우저: chromium | firefox | webkit | ...
+yarn playwright install chromium
+yarn playwright install --with-deps chromium   # 의존성 포함 설치 (Docker/CI 권장)
+yarn playwright install chromium firefox
+```
+
+- 캐시/설치 경로
+
+  - 기본: `~/.cache/ms-playwright`
+  - 변경(예):
+    ```bash
+    export PLAYWRIGHT_BROWSERS_PATH=/tmp/ms-playwright
+    ```
+
+- Docker 예시
+
+```dockerfile
+# Playwright 브라우저 자동 다운로드 방지 후, 필요한 것만 설치
+ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+RUN yarn install && yarn playwright install --with-deps chromium
+```
+
+- 런타임 예시
+
+```js
+// Playwright가 설치한 Chromium 사용
+import { chromium } from "playwright";
+const browser = await chromium.launch({ headless: true });
+
+// 시스템 Chromium 명시 사용 예시
+const browserSys = await chromium.launch({
+  executablePath: "/usr/bin/chromium-browser",
+});
+```
